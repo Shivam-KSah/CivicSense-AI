@@ -1,6 +1,5 @@
 # 🏆 CivicSense AI – AI-Powered Community Issue Resolution Platform
 
-**Coding Ninjas Hackathon Submission**
 **Live Demo:** [https://civicsense-ai-shivam.web.app](https://civicsense-ai-shivam.web.app)
 
 
