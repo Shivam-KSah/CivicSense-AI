@@ -44,6 +44,9 @@ A robust global search bar integrated directly into the navigation. It instantly
 ### 🌗 Global Dark Mode
 A seamless, state-of-the-art Dark Mode toggle available on the navigation bar. With a single click, the entire platform transforms into a premium, accessible dark UI, dynamically updating backgrounds, text colors, and component shadows globally.
 
+### 🌍 Instant Multilingual Translation
+A built-in native language selector that instantly translates the entire application into 10 major Indian regional languages (Hindi, Marathi, Punjabi, Telugu, Kannada, Tamil, Gujarati, Bengali, Malayalam). This ensures maximum accessibility for all citizens, breaking down language barriers in civic reporting.
+
 ### 🛡️ Community Verification System
 To ensure data integrity and prevent duplicate/fake reports, nearby citizens receive reports in their feed and can "Upvote/Verify" the issue. This crowdsourced consensus filters out spam and establishes a credible "Trust Score" before authorities intervene.
 
@@ -58,7 +61,16 @@ An integrated conversational AI assistant available everywhere on the platform. 
 
 ---
 
-## 4. Technology Stack
+## 4. Future Roadmap
+While we have built a fully functional prototype, our vision for CivicSense AI extends much further. Our roadmap includes:
+* **Predictive Analytics:** Using historical issue data and AI to predict future hotspot zones (e.g., predicting pipeline bursts before winter).
+* **Hardware & IoT Integration:** Connecting with smart city sensors (e.g., weight sensors on garbage bins) to trigger automated issue reports without citizen intervention.
+* **Automated Duplicate Detection:** Programmatically checking image embeddings to instantly flag and merge duplicate reports of the same pothole or incident.
+* **Multilingual Voice Reporting:** Expanding accessibility by allowing citizens to report issues by simply leaving an audio note in their native regional language.
+
+---
+
+## 5. Technology Stack
 * **Frontend:** React.js (Vite)
 * **AI Stack:** Google Gemini Generative AI (Vision & Text Models)
 * **Database & Hosting:** Firebase Hosting
@@ -67,7 +79,7 @@ An integrated conversational AI assistant available everywhere on the platform. 
 
 ---
 
-## 5. Conclusion
+## 6. Conclusion
 CivicSense AI proves that by combining cutting-edge AI image analysis with crowdsourced community verification and a dedicated municipal response portal, we can drastically simplify and modernize civic issue management. 
 
 *Built with ❤️ for the Coding Ninjas Hackathon*
