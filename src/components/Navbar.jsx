@@ -124,6 +124,7 @@ export default function Navbar({ onNavigate, searchQuery, onSearch }) {
 
       {/* Actions */}
       <div className="navbar-actions">
+        <div id="google_translate_element" style={{ marginRight: '8px', marginTop: '2px' }}></div>
         <button className="nav-icon-btn" onClick={toggleTheme}>
           {isDark ? <Sun size={18} color="var(--text-muted)" /> : <Moon size={18} color="var(--text-muted)" />}
         </button>

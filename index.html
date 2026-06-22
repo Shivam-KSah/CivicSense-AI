@@ -9,9 +9,62 @@
     <meta property="og:title" content="CivicSense AI — Community Issue Tracker" />
     <meta property="og:description" content="AI-powered hyperlocal civic issue reporting and resolution platform" />
     <title>CivicSense AI — Community Issue Tracker</title>
+    <style>
+      /* Force Native Dropdown & Hide Google Branding */
+      body { top: 0px !important; margin-top: 0px !important; }
+      .goog-te-banner-frame { display: none !important; }
+      .skiptranslate > iframe { display: none !important; }
+      .VIpgJd-ZVi9od-ORHb-OEVmcd { display: none !important; }
+      
+      /* Remove hover highlight boxes */
+      .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; border: none !important; }
+      
+      #google_translate_element .goog-te-gadget {
+        font-size: 0px !important;
+        color: transparent !important;
+        display: flex;
+        align-items: center;
+      }
+      #google_translate_element .goog-te-gadget img,
+      #google_translate_element .goog-te-gadget span {
+        display: none !important;
+      }
+      #google_translate_element .goog-te-combo {
+        color: var(--text-primary, #1A1A1A) !important;
+        background-color: var(--bg-card, #FFFFFF) !important;
+        border: 1px solid var(--border, #E5E7EB) !important;
+        border-radius: 20px !important;
+        padding: 6px 12px !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        outline: none !important;
+        margin: 0 !important;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 14px;
+        padding-right: 28px !important;
+      }
+      #google_translate_element .goog-te-combo:hover {
+        background-color: var(--bg-main, #F7F9F7) !important;
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,hi,mr,pa,te,kn,ta,gu,bn,ml'
+        }, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
