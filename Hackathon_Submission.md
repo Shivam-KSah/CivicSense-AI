@@ -64,9 +64,7 @@ An integrated conversational AI assistant available everywhere on the platform. 
 ## 4. Future Roadmap
 While we have built a fully functional prototype, our vision for CivicSense AI extends much further. Our roadmap includes:
 * **Predictive Analytics:** Using historical issue data and AI to predict future hotspot zones (e.g., predicting pipeline bursts before winter).
-* **Hardware & IoT Integration:** Connecting with smart city sensors (e.g., weight sensors on garbage bins) to trigger automated issue reports without citizen intervention.
 * **Automated Duplicate Detection:** Programmatically checking image embeddings to instantly flag and merge duplicate reports of the same pothole or incident.
-* **Multilingual Voice Reporting:** Expanding accessibility by allowing citizens to report issues by simply leaving an audio note in their native regional language.
 
 ---
 
