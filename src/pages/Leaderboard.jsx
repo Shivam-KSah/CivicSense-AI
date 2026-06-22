@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trophy, Star, Zap, Shield, Award, TrendingUp } from 'lucide-react';
+import { Award, Star, TrendingUp, Users, Trophy, Zap, Shield, Camera, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const LEADERBOARD_DATA = [
@@ -14,12 +14,12 @@ const LEADERBOARD_DATA = [
 ];
 
 const BADGE_CATALOG = [
-  { icon: '🏅', name: 'First Reporter', desc: 'Submit your first issue', xp: 10, earned: true },
-  { icon: '📸', name: '10 Reports Club', desc: 'Report 10 community issues', xp: 100, earned: false },
-  { icon: '✅', name: 'Verified Hero', desc: 'Verify 50 community issues', xp: 250, earned: false },
-  { icon: '🏆', name: 'Top Reporter', desc: 'Reach #1 on the leaderboard', xp: 500, earned: false },
-  { icon: '⚡', name: 'Speed Verifier', desc: 'Verify 5 issues in 1 hour', xp: 50, earned: false },
-  { icon: '🌟', name: 'Community Star', desc: 'Get 100+ votes on your reports', xp: 200, earned: false },
+  { icon: Award, color: '#10B981', name: 'First Reporter', desc: 'Submit your first issue', xp: 10, earned: true },
+  { icon: Camera, color: '#6366F1', name: '10 Reports Club', desc: 'Report 10 community issues', xp: 100, earned: false },
+  { icon: ShieldCheck, color: '#3B82F6', name: 'Verified Hero', desc: 'Verify 50 community issues', xp: 250, earned: false },
+  { icon: Trophy, color: '#F59E0B', name: 'Top Reporter', desc: 'Reach #1 on the leaderboard', xp: 500, earned: false },
+  { icon: Zap, color: '#EAB308', name: 'Speed Verifier', desc: 'Verify 5 issues in 1 hour', xp: 50, earned: false },
+  { icon: Star, color: '#F59E0B', name: 'Community Star', desc: 'Get 100+ votes on your reports', xp: 200, earned: false },
 ];
 
 const RANK_STYLES = {
@@ -37,7 +37,12 @@ export default function Leaderboard() {
     <div>
       <div className="page-header">
         <div>
-          <h1 className="page-title">🏆 Leaderboard</h1>
+          <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ background: '#FFFBEB', padding: 8, borderRadius: 12, color: '#F59E0B', display: 'flex' }}>
+              <Trophy size={24} strokeWidth={2.5} />
+            </div>
+            Leaderboard
+          </h1>
           <p className="page-subtitle">Top civic contributors in your community</p>
         </div>
         <div style={{ display: 'flex', gap: 4, background: 'var(--bg-main)', padding: 4, borderRadius: 'var(--radius-full)' }}>
@@ -228,7 +233,14 @@ export default function Leaderboard() {
                   borderBottomLeftRadius: 10
                 }}>EARNED</div>
               )}
-              <div style={{ fontSize: 40, marginBottom: 10 }}>{badge.icon}</div>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ 
+                  display: 'inline-flex', padding: 12, borderRadius: 12, 
+                  background: `${badge.color}20`, color: badge.color 
+                }}>
+                  <badge.icon size={28} strokeWidth={2} />
+                </div>
+              </div>
               <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>{badge.name}</div>
               <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 10 }}>{badge.desc}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

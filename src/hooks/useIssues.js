@@ -176,6 +176,20 @@ export function useIssues() {
     });
   };
 
+  const addComment = (issueId, text, author) => {
+    setIssues(prev => {
+      const updated = prev.map(i => {
+        if (i.id === issueId) {
+          const newComment = { id: Date.now(), text, author, createdAt: new Date().toISOString() };
+          return { ...i, commentsList: [...(i.commentsList || []), newComment], comments: (i.comments || 0) + 1 };
+        }
+        return i;
+      });
+      saveIssues(updated);
+      return updated;
+    });
+  };
+
   const getStats = () => {
     const total = issues.length;
     const open = issues.filter(i => i.status === 'Open').length;
@@ -192,5 +206,5 @@ export function useIssues() {
     return { total, open, inProgress, resolved, verified, critical, byCategory };
   };
 
-  return { issues, loading, addIssue, voteIssue, verifyIssue, updateStatus, getStats };
+  return { issues, loading, addIssue, voteIssue, verifyIssue, updateStatus, addComment, getStats };
 }

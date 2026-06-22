@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { MapPin, Shield, TrendingUp, Users, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -10,13 +10,22 @@ const FEATURES = [
 ];
 
 export default function Landing({ onLogin }) {
-  const { loginWithGoogle, loginWithEmail } = useAuth();
+  const { loginWithGoogle, loginWithEmail, loginAsOfficer } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [authRole, setAuthRole] = useState('citizen');
+  const emailInputRef = useRef(null);
+
+  const handleTopNavClick = (isLoginView) => {
+    setIsLogin(isLoginView);
+    setTimeout(() => {
+      emailInputRef.current?.focus();
+    }, 50);
+  };
 
   const handleGoogle = async () => {
     setLoading(true);
@@ -35,6 +44,13 @@ export default function Landing({ onLogin }) {
     onLogin?.(user);
   };
 
+  const handleOfficerLogin = async () => {
+    setLoading(true);
+    const user = await loginAsOfficer();
+    setLoading(false);
+    onLogin?.(user);
+  };
+
   return (
     <div className="landing-hero">
       {/* Navbar */}
@@ -44,26 +60,40 @@ export default function Landing({ onLogin }) {
         background: 'var(--white)', borderBottom: '1px solid var(--border)',
         position: 'sticky', top: 0, zIndex: 10
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontWeight: 800, fontSize: 22, color: 'var(--primary)' }}>
-          <svg width="32" height="32" viewBox="0 0 28 28" fill="none">
-            <rect width="28" height="28" rx="8" fill="var(--primary)" />
-            <path d="M14 6L20 10V18L14 22L8 18V10L14 6Z" fill="white" opacity="0.9"/>
-            <circle cx="14" cy="14" r="3" fill="var(--primary)"/>
-          </svg>
-          CivicSense AI
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <img src="/logo.png" alt="CivicSense AI Logo" style={{ height: 55 }} />
         </div>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          <button className="btn btn-ghost btn-sm" onClick={() => setIsLogin(true)}>Log in</button>
-          <button className="btn btn-primary btn-sm" onClick={() => setIsLogin(false)}>Sign up</button>
+          <button className="btn btn-ghost btn-sm" onClick={() => handleTopNavClick(true)}>Log in</button>
+          <button className="btn btn-primary btn-sm" onClick={() => handleTopNavClick(false)}>Sign up</button>
         </div>
       </nav>
 
       {/* Hero Content */}
       <div className="landing-hero-bg">
         <div className="auth-card">
-          <div className="auth-title">
-            Discover your neighborhood
+          {/* Role Toggle */}
+          <div style={{ display: 'flex', background: 'var(--bg-main)', borderRadius: 'var(--radius-full)', padding: 4, marginBottom: 24 }}>
+            <button 
+              onClick={() => setAuthRole('citizen')}
+              style={{ flex: 1, padding: '10px', borderRadius: 'var(--radius-full)', border: 'none', background: authRole === 'citizen' ? 'var(--white)' : 'transparent', color: authRole === 'citizen' ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: 700, fontSize: 14, boxShadow: authRole === 'citizen' ? 'var(--shadow-sm)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}
+            >
+              Citizen
+            </button>
+            <button 
+              onClick={() => setAuthRole('officer')}
+              style={{ flex: 1, padding: '10px', borderRadius: 'var(--radius-full)', border: 'none', background: authRole === 'officer' ? 'var(--white)' : 'transparent', color: authRole === 'officer' ? 'var(--text-primary)' : 'var(--text-muted)', fontWeight: 700, fontSize: 14, boxShadow: authRole === 'officer' ? 'var(--shadow-sm)' : 'none', cursor: 'pointer', transition: 'all 0.2s' }}
+            >
+              Municipal Officer
+            </button>
           </div>
+
+          <div className="auth-title">
+            {authRole === 'citizen' ? 'Discover your neighborhood' : 'Official Login Portal'}
+          </div>
+
+          {authRole === 'citizen' ? (
+            <>
 
           {/* Google Button */}
           <button className="google-btn" onClick={handleGoogle} disabled={loading} id="google-signin-btn">
@@ -88,15 +118,15 @@ export default function Landing({ onLogin }) {
 
             <div className="form-group">
               <input
-                id="email-input"
-                className="form-input"
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                style={{ background: 'transparent', padding: '14px', borderRadius: '8px' }}
-              />
+                  type="email"
+                  placeholder="Email address"
+                  className="form-input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  ref={emailInputRef}
+                  required
+                  style={{ background: 'transparent', padding: '14px', borderRadius: '8px' }}
+                />
             </div>
 
             <div className="form-group" style={{ position: 'relative' }}>
@@ -136,72 +166,66 @@ export default function Landing({ onLogin }) {
               {loading ? <span className="spinner" /> : 'Continue'}
             </button>
           </form>
+          </>
+          ) : (
+            <form onSubmit={(e) => { e.preventDefault(); handleOfficerLogin(); }} style={{ textAlign: 'center' }}>
+              <Shield size={48} color="var(--primary)" style={{ marginBottom: 16 }} />
+              <p style={{ color: 'var(--text-secondary)', marginBottom: 20, fontSize: 14 }}>
+                Access the city management dashboard.
+              </p>
+              
+              <div className="form-group">
+                <input
+                    type="email"
+                    placeholder="Official Govt ID / Email"
+                    className="form-input"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    style={{ background: 'transparent', padding: '14px', borderRadius: '8px', textAlign: 'left' }}
+                  />
+              </div>
 
-          <div style={{ textAlign: 'center', marginTop: 20, fontSize: 14 }}>
-            Have a business? <a href="#" style={{ color: 'var(--text-primary)', textDecoration: 'underline', fontWeight: 600 }}>Get started</a>
-          </div>
+              <div className="form-group" style={{ position: 'relative' }}>
+                <input
+                  className="form-input"
+                  type={showPass ? 'text' : 'password'}
+                  placeholder="Password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  style={{ background: 'transparent', padding: '14px', borderRadius: '8px', paddingRight: 44, textAlign: 'left' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(!showPass)}
+                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', color: 'var(--text-muted)' }}
+                >
+                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+
+              <button 
+                type="submit"
+                className="btn btn-primary" 
+                style={{ width: '100%', justifyContent: 'center', padding: '14px', fontSize: '15px', borderRadius: 'var(--radius-full)', marginTop: 8 }}
+                disabled={loading}
+              >
+                {loading ? <span className="spinner" /> : 'Secure Official Login'}
+              </button>
+            </form>
+          )}
         </div>
       </div>
 
-      {/* Footer Section matching Nextdoor */}
-      <div className="landing-footer">
-        <div className="landing-footer-container">
-          <div className="landing-footer-top">
-            <h2 style={{ maxWidth: 350, lineHeight: 1.2 }}>Create a business page to connect with local customers on CivicSense</h2>
-            <div style={{ display: 'flex', gap: 10, flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
-              <input 
-                type="text" 
-                placeholder="Your business name" 
-                style={{ padding: '14px 20px', borderRadius: '8px', border: '1px solid var(--border)', width: '300px', fontSize: '15px' }} 
-              />
-              <button style={{ width: 46, height: 46, borderRadius: '50%', background: '#1A2b3c', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                →
-              </button>
-            </div>
-          </div>
-
-          <div className="landing-footer-grid">
-            <div className="footer-col">
-              <h4>CivicSense</h4>
-              <ul>
-                <li><a href="#">About</a></li>
-                <li><a href="#">News</a></li>
-                <li><a href="#">Media Assets</a></li>
-                <li><a href="#">Investor Relations</a></li>
-                <li><a href="#">Blog</a></li>
-                <li><a href="#">Careers</a></li>
-                <li><a href="#">Help</a></li>
-              </ul>
-            </div>
-            <div className="footer-col">
-              <h4>Neighbors</h4>
-              <ul>
-                <li><a href="#">Get Started</a></li>
-                <li><a href="#">Events</a></li>
-                <li><a href="#">Neighborhoods</a></li>
-                <li><a href="#">Guidelines</a></li>
-              </ul>
-            </div>
-            <div className="footer-col">
-              <h4>Partners</h4>
-              <ul>
-                <li><a href="#">Small Business</a></li>
-                <li><a href="#">Brands and Agencies</a></li>
-                <li><a href="#">Public Agencies</a></li>
-                <li><a href="#">Publishers</a></li>
-                <li><a href="#">Businesses on CivicSense</a></li>
-              </ul>
-            </div>
-            <div className="footer-col">
-              <h4>Legal</h4>
-              <ul>
-                <li><a href="#">Privacy</a></li>
-                <li><a href="#">Legal & Terms</a></li>
-                <li><a href="#">Cookies</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
+      {/* Inspiring Banner Footer */}
+      <div style={{ background: 'var(--primary)', color: 'white', padding: '40px 20px', textAlign: 'center' }}>
+        <h2 style={{ fontSize: 24, fontWeight: 700, margin: 0, letterSpacing: '-0.5px' }}>
+          "Responsibility Starts With Us."
+        </h2>
+        <p style={{ fontSize: 16, marginTop: 10, opacity: 0.9, maxWidth: 600, margin: '10px auto 0' }}>
+          Join thousands of civic-minded neighbors using AI to keep our streets clean, safe, and beautiful.
+        </p>
       </div>
     </div>
   );

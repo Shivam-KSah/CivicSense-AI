@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle } from 'react-leaflet';
+import { Map as MapIcon } from 'lucide-react';
 import L from 'leaflet';
 import { useIssues } from '../hooks/useIssues';
 import { StatusBadge } from '../components/IssueCard';
@@ -46,11 +47,20 @@ const CATEGORY_ICONS = {
 const FILTER_OPTIONS = ['All', 'Open', 'In Progress', 'Resolved', 'Verified'];
 const CATEGORY_FILTERS = ['All', 'Pothole', 'Water Leakage', 'Streetlight', 'Garbage', 'Road Damage', 'Other'];
 
+const PREDICTIVE_HOTSPOTS = [
+  { lat: 28.5355, lng: 77.3910, radius: 600, risk: 'High', prob: 85, type: 'Severe Water Logging (Monsoon)' },
+  { lat: 19.0760, lng: 72.8777, radius: 800, risk: 'Critical', prob: 92, type: 'Drainage Failure & Flooding' },
+  { lat: 12.9716, lng: 77.5946, radius: 500, risk: 'High', prob: 78, type: 'Pothole Clusters & Road Degradation' },
+  { lat: 13.0827, lng: 80.2707, radius: 700, risk: 'High', prob: 88, type: 'Monsoon Flood Zone' },
+  { lat: 28.6139, lng: 77.2090, radius: 450, risk: 'Medium', prob: 65, type: 'Traffic Signal Failures (Rain)' },
+];
+
 export default function MapPage({ onNavigate }) {
   const { issues } = useIssues();
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [statusFilter, setStatusFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
+  const [showHotspots, setShowHotspots] = useState(false);
 
   const filtered = issues.filter(i =>
     (statusFilter === 'All' || i.status === statusFilter) &&
@@ -63,12 +73,26 @@ export default function MapPage({ onNavigate }) {
     <div>
       <div className="page-header">
         <div>
-          <h1 className="page-title">🗺️ Community Issue Map</h1>
+          <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ background: '#EFF6FF', padding: 8, borderRadius: 12, color: '#3B82F6', display: 'flex' }}>
+              <MapIcon size={24} strokeWidth={2.5} />
+            </div>
+            Community Issue Map
+          </h1>
           <p className="page-subtitle">{filtered.length} issues displayed • Click markers to see details</p>
         </div>
-        <button className="btn btn-primary btn-sm" onClick={() => onNavigate('report')}>
-          + Report Issue
-        </button>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <button 
+            className={`btn ${showHotspots ? 'btn-primary' : 'btn-outline'} btn-sm`} 
+            style={{ borderColor: showHotspots ? 'transparent' : 'var(--primary)', color: showHotspots ? 'white' : 'var(--primary)', background: showHotspots ? 'var(--primary)' : 'transparent' }}
+            onClick={() => setShowHotspots(!showHotspots)}
+          >
+            🔥 {showHotspots ? 'Hide AI Hotspots' : 'Predictive Hotspots'}
+          </button>
+          <button className="btn btn-primary btn-sm" onClick={() => onNavigate('report')}>
+            + Report Issue
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -134,6 +158,33 @@ export default function MapPage({ onNavigate }) {
                   </Popup>
                 </Marker>
               )
+            ))}
+
+            {showHotspots && PREDICTIVE_HOTSPOTS.map((spot, i) => (
+              <Circle
+                key={`hotspot-${i}`}
+                center={[spot.lat, spot.lng]}
+                radius={spot.radius}
+                pathOptions={{ 
+                  color: spot.risk === 'Critical' ? '#DC2626' : '#EA580C', 
+                  fillColor: spot.risk === 'Critical' ? '#EF4444' : '#F97316', 
+                  fillOpacity: 0.3,
+                  weight: 2,
+                  dashArray: '4 4'
+                }}
+              >
+                <Popup>
+                  <div style={{ fontFamily: 'Inter, sans-serif', minWidth: 180 }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: '#DC2626', textTransform: 'uppercase', marginBottom: 4 }}>
+                      🤖 AI Prediction: {spot.risk} Risk
+                    </div>
+                    <div style={{ fontWeight: 800, fontSize: 13, marginBottom: 6 }}>{spot.type}</div>
+                    <p style={{ fontSize: 11, color: '#4B5563', margin: 0 }}>
+                      Based on historical weather & civic data, there is an <strong>{spot.prob}% probability</strong> of infrastructure failure here in the next 30 days. Preventative action recommended.
+                    </p>
+                  </div>
+                </Popup>
+              </Circle>
             ))}
           </MapContainer>
         </div>

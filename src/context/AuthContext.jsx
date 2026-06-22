@@ -55,6 +55,26 @@ export function AuthProvider({ children }) {
     return demoUser;
   };
 
+  const loginAsOfficer = async () => {
+    const demoAdmin = {
+      uid: 'admin-001',
+      email: 'officer@city.gov.in',
+      displayName: 'A. Sharma (Municipal Officer)',
+      role: 'admin',
+      photoURL: null,
+      xp: 0,
+      level: 'Admin',
+      reportsCount: 0,
+      verifiedCount: 0,
+      badges: [],
+      joinedAt: '2020-05-10',
+      neighborhood: 'City Headquarters'
+    };
+    setUser(demoAdmin);
+    localStorage.setItem('civicsense_user', JSON.stringify(demoAdmin));
+    return demoAdmin;
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('civicsense_user');
@@ -68,7 +88,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, loginWithGoogle, loginWithEmail, logout, updateUserXP }}>
+    <AuthContext.Provider value={{ user, loading, loginWithGoogle, loginWithEmail, loginAsOfficer, logout, updateUserXP }}>
       {children}
     </AuthContext.Provider>
   );

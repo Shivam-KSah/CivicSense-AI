@@ -11,6 +11,9 @@ import CommunityFeed from './pages/CommunityFeed';
 import MyIssues from './pages/MyIssues';
 import Insights from './pages/Insights';
 import Leaderboard from './pages/Leaderboard';
+import Forum from './pages/Forum';
+import Initiatives from './pages/Initiatives';
+import AdminDashboard from './pages/AdminDashboard';
 
 const PAGE_MAP = {
   dashboard: Dashboard,
@@ -20,11 +23,14 @@ const PAGE_MAP = {
   'my-issues': MyIssues,
   insights: Insights,
   leaderboard: Leaderboard,
+  forum: Forum,
+  initiatives: Initiatives,
 };
 
 function AppContent() {
   const { user, loading } = useAuth();
   const [activePage, setActivePage] = useState('dashboard');
+  const [searchQuery, setSearchQuery] = useState('');
 
   if (loading) {
     return (
@@ -41,15 +47,20 @@ function AppContent() {
     return <Landing onLogin={() => setActivePage('dashboard')} />;
   }
 
-  const ActivePage = PAGE_MAP[activePage] || Dashboard;
+  // Admin Routing override
+  if (user.role === 'admin' && activePage === 'dashboard') {
+    var ActivePage = AdminDashboard;
+  } else {
+    var ActivePage = PAGE_MAP[activePage] || Dashboard;
+  }
 
   return (
     <div className="app-layout">
-      <Navbar onNavigate={setActivePage} />
+      <Navbar onNavigate={setActivePage} searchQuery={searchQuery} onSearch={setSearchQuery} />
       <div className="main-layout">
         <Sidebar activePage={activePage} onNavigate={setActivePage} />
         <main className="content-area">
-          <ActivePage onNavigate={setActivePage} />
+          <ActivePage onNavigate={setActivePage} searchQuery={searchQuery} />
         </main>
       </div>
       <ChatWidget />

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from 'recharts';
-import { Sparkles, TrendingUp, AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
+import { Sparkles, TrendingUp, AlertTriangle, CheckCircle, RefreshCw, BarChart2 } from 'lucide-react';
 import { useIssues } from '../hooks/useIssues';
 import { generateInsightsSummary } from '../gemini';
 
@@ -41,7 +41,12 @@ export default function Insights() {
     <div>
       <div className="page-header">
         <div>
-          <h1 className="page-title">📊 Insights & Analytics</h1>
+          <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ background: '#FFFBEB', padding: 8, borderRadius: 12, color: '#F59E0B', display: 'flex' }}>
+              <BarChart2 size={24} strokeWidth={2.5} />
+            </div>
+            Insights & Analytics
+          </h1>
           <p className="page-subtitle">AI-powered community intelligence dashboard</p>
         </div>
         <button className="btn btn-primary btn-sm" onClick={loadAIInsights} disabled={loadingInsights} id="load-insights-btn">

@@ -114,7 +114,7 @@ Respond helpfully and concisely (2-3 sentences max). Be friendly and encouraging
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 200 }
+        generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
       })
     });
 

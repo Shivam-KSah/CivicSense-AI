@@ -56,7 +56,7 @@ export default function ChatWidget() {
         id="chat-fab-btn"
         title="Chat with CivicBot"
       >
-        {isOpen ? <X size={22} /> : <Bot size={22} />}
+        {isOpen ? <X size={40} /> : <Bot size={40} />}
       </button>
 
       {/* Chat Window */}

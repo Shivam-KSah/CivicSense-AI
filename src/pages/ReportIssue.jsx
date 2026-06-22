@@ -8,16 +8,18 @@ const CATEGORIES = ['Pothole', 'Water Leakage', 'Streetlight', 'Garbage', 'Road 
 const DEPARTMENTS = ['Public Works', 'Water Authority', 'Electricity Board', 'Sanitation', 'Traffic', 'Forest Department'];
 
 const LOCATIONS = [
-  { lat: 28.5355, lng: 77.3910, address: 'Sector 15, Noida, UP' },
-  { lat: 28.5362, lng: 77.3925, address: 'Park Road, Sector 15, Noida' },
-  { lat: 28.5348, lng: 77.3898, address: 'Block B, Sector 15, Noida' },
-  { lat: 28.5370, lng: 77.3935, address: 'Market Area, Sector 15, Noida' },
-  { lat: 28.5340, lng: 77.3885, address: 'Highway Entry, Sector 14-15 Junction' },
+  { lat: 28.6139, lng: 77.2090, address: 'Connaught Place, New Delhi' },
+  { lat: 19.0760, lng: 72.8777, address: 'Andheri West, Mumbai' },
+  { lat: 12.9716, lng: 77.5946, address: 'Koramangala, Bangalore' },
+  { lat: 13.0827, lng: 80.2707, address: 'T. Nagar, Chennai' },
+  { lat: 22.5726, lng: 88.3639, address: 'Salt Lake, Kolkata' },
+  { lat: 18.5204, lng: 73.8567, address: 'Viman Nagar, Pune' },
+  { lat: 17.3850, lng: 78.4867, address: 'Banjara Hills, Hyderabad' },
 ];
 
 export default function ReportIssue({ onNavigate }) {
   const { user, updateUserXP } = useAuth();
-  const { addIssue } = useIssues();
+  const { addIssue, issues } = useIssues();
   const fileRef = useRef();
 
   const [step, setStep] = useState(1);
@@ -27,6 +29,9 @@ export default function ReportIssue({ onNavigate }) {
   const [analyzing, setAnalyzing] = useState(false);
   const [aiResult, setAiResult] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [duplicateWarning, setDuplicateWarning] = useState(null);
+  const [gpsLoading, setGpsLoading] = useState(false);
+  const [gpsLocation, setGpsLocation] = useState(null);
 
   const [form, setForm] = useState({
     title: '',
@@ -47,6 +52,7 @@ export default function ReportIssue({ onNavigate }) {
       setImagePreview(e.target.result);
       setStep(2);
       setAnalyzing(true);
+      setDuplicateWarning(null); // Reset duplicate warning on new image
 
       // Convert to base64
       const base64 = e.target.result.split(',')[1];
@@ -68,6 +74,26 @@ export default function ReportIssue({ onNavigate }) {
     reader.readAsDataURL(file);
   };
 
+  const handleGetGPS = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+    setGpsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const customLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude, address: '📍 Your Current Location (GPS Detected)' };
+        setGpsLocation(customLoc);
+        setForm(p => ({ ...p, location: customLoc }));
+        setGpsLoading(false);
+      },
+      (err) => {
+        alert("Could not get your location. Please check browser permissions.");
+        setGpsLoading(false);
+      }
+    );
+  };
+
   const handleDrop = useCallback((e) => {
     e.preventDefault();
     setDragOver(false);
@@ -75,8 +101,21 @@ export default function ReportIssue({ onNavigate }) {
     handleFile(file);
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = (bypassDuplicateCheck = false) => {
     if (!form.title || !form.category) return;
+
+    if (!bypassDuplicateCheck) {
+      // Check for duplicates (same category, not resolved)
+      const similarIssues = issues?.filter(issue => 
+        issue.category === form.category && 
+        issue.status !== 'Resolved'
+      ) || [];
+
+      if (similarIssues.length > 0) {
+        setDuplicateWarning(similarIssues[0]);
+        return; // Stop submission to show warning
+      }
+    }
 
     addIssue({
       ...form,
@@ -153,7 +192,12 @@ export default function ReportIssue({ onNavigate }) {
     <div>
       <div className="page-header">
         <div>
-          <h1 className="page-title">📸 Report an Issue</h1>
+          <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ background: 'var(--primary-light)', padding: 8, borderRadius: 12, color: 'var(--primary)', display: 'flex' }}>
+              <Camera size={24} strokeWidth={2.5} />
+            </div>
+            Report an Issue
+          </h1>
           <p className="page-subtitle">Upload a photo — Gemini AI will automatically analyze and categorize your issue</p>
         </div>
       </div>
@@ -317,17 +361,34 @@ export default function ReportIssue({ onNavigate }) {
           </div>
 
           <div className="form-group">
-            <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <MapPin size={13} color="var(--primary)" /> Location
+            <label className="form-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <MapPin size={13} color="var(--primary)" /> Location
+              </div>
+              <button 
+                onClick={(e) => { e.preventDefault(); handleGetGPS(); }} 
+                disabled={gpsLoading}
+                className="btn btn-sm"
+                style={{ background: 'var(--primary-light)', color: 'var(--primary)', padding: '4px 8px', fontSize: 11, border: 'none' }}
+              >
+                {gpsLoading ? <Loader size={12} className="spinner" /> : '📍 Use My GPS'}
+              </button>
             </label>
             <select
               className="form-select"
-              onChange={e => setForm(p => ({ ...p, location: LOCATIONS[parseInt(e.target.value)] }))}
+              value={form.location.address}
+              onChange={e => {
+                if (e.target.value === '📍 Your Current Location (GPS Detected)') {
+                  setForm(p => ({ ...p, location: gpsLocation }));
+                } else {
+                  setForm(p => ({ ...p, location: LOCATIONS.find(l => l.address === e.target.value) }));
+                }
+              }}
               id="location-select"
             >
-              {LOCATIONS.map((l, i) => <option key={i} value={i}>{l.address}</option>)}
+              {gpsLocation && <option value={gpsLocation.address}>{gpsLocation.address}</option>}
+              {LOCATIONS.map((l) => <option key={l.address} value={l.address}>{l.address}</option>)}
             </select>
-            <p className="form-hint">📍 Or we'll use your GPS location automatically</p>
           </div>
 
           <div className="form-group">
@@ -343,15 +404,36 @@ export default function ReportIssue({ onNavigate }) {
             </select>
           </div>
 
-          <button
-            id="submit-report-btn"
-            className="btn btn-primary"
-            style={{ width: '100%', justifyContent: 'center', padding: '13px' }}
-            onClick={handleSubmit}
-            disabled={!form.title || !form.category}
-          >
-            <CheckCircle size={16} /> Submit Report • +10 XP
-          </button>
+          {duplicateWarning && (
+            <div style={{ background: '#FEF2F2', border: '1px solid #FCA5A5', padding: 12, borderRadius: 8, marginBottom: 16 }}>
+              <div style={{ color: '#DC2626', fontWeight: 700, fontSize: 13, display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                <AlertTriangle size={14} /> AI Duplicate Detected!
+              </div>
+              <p style={{ fontSize: 12, color: '#991B1B', margin: 0, marginBottom: 10 }}>
+                A similar issue ("{duplicateWarning.title}") was already reported recently.
+              </p>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button className="btn btn-outline btn-sm" style={{ flex: 1, borderColor: '#FCA5A5', color: '#DC2626' }} onClick={() => onNavigate('feed')}>
+                  View Feed
+                </button>
+                <button className="btn btn-sm" style={{ flex: 1, background: '#DC2626', color: 'white', border: 'none' }} onClick={() => handleSubmit(true)}>
+                  Submit Anyway
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!duplicateWarning && (
+            <button
+              id="submit-report-btn"
+              className="btn btn-primary"
+              style={{ width: '100%', justifyContent: 'center', padding: '13px' }}
+              onClick={() => handleSubmit(false)}
+              disabled={!form.title || !form.category}
+            >
+              <CheckCircle size={16} /> Submit Report • +10 XP
+            </button>
+          )}
         </div>
       </div>
     </div>

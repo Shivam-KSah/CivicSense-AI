@@ -1,16 +1,16 @@
 import React from 'react';
-import { ThumbsUp, MapPin, Clock, CheckCircle, AlertTriangle, MessageCircle, Shield } from 'lucide-react';
+import { ThumbsUp, MapPin, Clock, CheckCircle, AlertTriangle, MessageCircle, Shield, Info, AlertCircle, Droplet, Lightbulb, Trash2, TreePine, Waves, Hammer, ClipboardList } from 'lucide-react';
 
 const CATEGORY_ICONS = {
-  'Pothole': '🕳️',
-  'Water Leakage': '💧',
-  'Streetlight': '💡',
-  'Garbage': '🗑️',
-  'Road Damage': '🚧',
-  'Tree Hazard': '🌳',
-  'Flooding': '🌊',
-  'Vandalism': '🔨',
-  'Other': '📋',
+  'Pothole': { icon: AlertCircle, color: '#F59E0B' },
+  'Water Leakage': { icon: Droplet, color: '#3B82F6' },
+  'Streetlight': { icon: Lightbulb, color: '#EAB308' },
+  'Garbage': { icon: Trash2, color: '#10B981' },
+  'Road Damage': { icon: AlertTriangle, color: '#EF4444' },
+  'Tree Hazard': { icon: TreePine, color: '#84CC16' },
+  'Flooding': { icon: Waves, color: '#0EA5E9' },
+  'Vandalism': { icon: Hammer, color: '#6366F1' },
+  'Other': { icon: ClipboardList, color: '#6B7280' },
 };
 
 const STATUS_COLORS = {
@@ -61,9 +61,15 @@ export default function IssueCard({ issue, onVote, onVerify, onClick }) {
         position: 'relative',
         borderBottom: '1px solid var(--border-light)'
       }}>
-        <span style={{ fontSize: 48, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}>
-          {CATEGORY_ICONS[issue.category] || '📋'}
-        </span>
+        {(() => {
+          const config = CATEGORY_ICONS[issue.category] || CATEGORY_ICONS['Other'];
+          const IconComp = config.icon;
+          return (
+            <div style={{ background: 'white', color: config.color, padding: 16, borderRadius: 24, display: 'flex', boxShadow: '0 8px 16px rgba(0,0,0,0.06)' }}>
+              <IconComp size={40} strokeWidth={2} />
+            </div>
+          );
+        })()}
         <div style={{ position: 'absolute', top: 10, right: 10 }}>
           <StatusBadge status={issue.status} />
         </div>
@@ -85,18 +91,21 @@ export default function IssueCard({ issue, onVote, onVerify, onClick }) {
         {/* Header */}
         <div className="issue-card-top">
           <div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              {issue.category}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                {issue.category}
+              </div>
+              <Info 
+                size={14} 
+                color="var(--text-muted)" 
+                style={{ cursor: 'help' }} 
+                title={issue.description} 
+              />
             </div>
-            <div className="issue-card-title">{issue.title}</div>
+            <div className="issue-card-title" style={{ paddingRight: 12 }}>{issue.title}</div>
           </div>
           <SeverityIndicator severity={issue.severity} />
         </div>
-
-        {/* Description */}
-        <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5, marginTop: 6, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {issue.description}
-        </p>
 
         {/* Meta */}
         <div className="issue-card-meta">

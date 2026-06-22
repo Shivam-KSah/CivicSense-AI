@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useIssues } from '../hooks/useIssues';
 import { StatusBadge } from '../components/IssueCard';
-import { Plus, Filter, ChevronRight, Clock, MapPin } from 'lucide-react';
+import { Plus, Filter, Search, List, ChevronRight, Clock, MapPin } from 'lucide-react';
 
 const CATEGORY_ICONS = {
   'Pothole': '🕳️', 'Water Leakage': '💧', 'Streetlight': '💡',
@@ -30,7 +30,12 @@ export default function MyIssues({ onNavigate }) {
     <div>
       <div className="page-header">
         <div>
-          <h1 className="page-title">📋 My Issues</h1>
+          <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ background: '#F1F5F9', padding: 8, borderRadius: 12, color: '#64748B', display: 'flex' }}>
+              <List size={24} strokeWidth={2.5} />
+            </div>
+            My Issues
+          </h1>
           <p className="page-subtitle">{myIssues.length} issues you've reported • +10 XP per report</p>
         </div>
         <button className="btn btn-primary btn-sm" onClick={() => onNavigate('report')}>
