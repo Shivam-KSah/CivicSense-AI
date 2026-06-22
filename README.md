@@ -2,9 +2,8 @@
 
 **Coding Ninjas Hackathon Submission**
 **Live Demo:** [https://civicsense-ai-shivam.web.app](https://civicsense-ai-shivam.web.app)
-**GitHub Repository:** [https://github.com/Shivam-KSah/CivicSense-AI](https://github.com/Shivam-KSah/CivicSense-AI)
 
----
+
 
 ## 1. Overview & Vision
 **CivicSense AI** is a smart, two-sided civic engagement platform that bridges the gap between citizens and municipal authorities. 
@@ -80,4 +79,3 @@ While we have built a fully functional prototype, our vision for CivicSense AI e
 ## 6. Conclusion
 CivicSense AI proves that by combining cutting-edge AI image analysis with crowdsourced community verification and a dedicated municipal response portal, we can drastically simplify and modernize civic issue management. 
 
-*Built with ❤️ for the Coding Ninjas Hackathon*
