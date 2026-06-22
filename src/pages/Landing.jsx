@@ -59,154 +59,147 @@ export default function Landing({ onLogin }) {
       </nav>
 
       {/* Hero Content */}
-      <div className="landing-content">
-        {/* Left: Hero Text */}
-        <div className="landing-left">
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--primary-light)', color: 'var(--primary)', padding: '6px 14px', borderRadius: 'var(--radius-full)', fontSize: 13, fontWeight: 600, marginBottom: 20 }}>
-            <MapPin size={14} />
-            Hyperlocal Problem Solver
+      <div className="landing-hero-bg">
+        <div className="auth-card">
+          <div className="auth-title">
+            Discover your neighborhood
           </div>
 
-          <h1>
-            Your community,<br />
-            <span>smarter together</span>
-          </h1>
+          {/* Google Button */}
+          <button className="google-btn" onClick={handleGoogle} disabled={loading} id="google-signin-btn">
+            <svg width="20" height="20" viewBox="0 0 48 48">
+              <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+              <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+              <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+              <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+            </svg>
+            Continue with Google
+          </button>
 
-          <p>
-            CivicSense AI lets citizens report, verify, and track local infrastructure issues — powered by Google Gemini AI. From potholes to water leaks, make your neighborhood better.
-          </p>
+          <div className="divider">or</div>
 
-          <div className="landing-features">
-            {FEATURES.map(f => (
-              <div key={f.title} className="landing-feature">
-                <div className="landing-feature-icon">{f.icon}</div>
-                <div>
-                  <div style={{ fontWeight: 600, fontSize: 14, color: 'var(--text-primary)', marginBottom: 2 }}>{f.title}</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{f.desc}</div>
-                </div>
+          {/* Email Form */}
+          <form onSubmit={handleEmail}>
+            {error && (
+              <div style={{ background: 'var(--status-open-bg)', color: 'var(--status-open)', padding: '10px 14px', borderRadius: 'var(--radius-md)', fontSize: 13, marginBottom: 16 }}>
+                {error}
               </div>
-            ))}
-          </div>
+            )}
 
-          {/* Trust Stats */}
-          <div style={{ display: 'flex', gap: 32, marginTop: 32, paddingTop: 24, borderTop: '1px solid var(--border)' }}>
-            {[
-              { val: '2,400+', label: 'Issues Reported' },
-              { val: '89%', label: 'Resolution Rate' },
-              { val: '15K+', label: 'Active Citizens' },
-            ].map(s => (
-              <div key={s.label}>
-                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--primary)' }}>{s.val}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{s.label}</div>
-              </div>
-            ))}
+            <div className="form-group">
+              <input
+                id="email-input"
+                className="form-input"
+                type="email"
+                placeholder="Email address"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                required
+                style={{ background: 'transparent', padding: '14px', borderRadius: '8px' }}
+              />
+            </div>
+
+            <div className="form-group" style={{ position: 'relative' }}>
+              <input
+                id="password-input"
+                className="form-input"
+                type={showPass ? 'text' : 'password'}
+                placeholder="Create a password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                style={{ background: 'transparent', padding: '14px', borderRadius: '8px', paddingRight: 44 }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPass(!showPass)}
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', color: 'var(--text-muted)' }}
+              >
+                {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+
+            <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginBottom: 20, lineHeight: 1.5, textAlign: 'left' }}>
+              By continuing with sign up, you agree to our{' '}
+              <a href="#" style={{ textDecoration: 'underline' }}>Privacy Policy</a>,{' '}
+              <a href="#" style={{ textDecoration: 'underline' }}>Cookie Policy</a>, and{' '}
+              <a href="#" style={{ textDecoration: 'underline' }}>Member Agreement</a>.
+            </p>
+
+            <button
+              id="submit-auth-btn"
+              type="submit"
+              className="btn btn-primary"
+              style={{ width: '100%', justifyContent: 'center', padding: '14px', fontSize: '15px', borderRadius: 'var(--radius-full)' }}
+              disabled={loading}
+            >
+              {loading ? <span className="spinner" /> : 'Continue'}
+            </button>
+          </form>
+
+          <div style={{ textAlign: 'center', marginTop: 20, fontSize: 14 }}>
+            Have a business? <a href="#" style={{ color: 'var(--text-primary)', textDecoration: 'underline', fontWeight: 600 }}>Get started</a>
           </div>
         </div>
+      </div>
 
-        {/* Right: Auth Card */}
-        <div>
-          <div className="auth-card">
-            <div className="auth-title">
-              {isLogin ? 'Welcome back 👋' : 'Join your community'}
-            </div>
-            <div className="auth-subtitle">
-              {isLogin
-                ? 'Sign in to track and report local issues'
-                : 'Create an account to start making a difference'}
-            </div>
-
-            {/* Google Button */}
-            <button className="google-btn" onClick={handleGoogle} disabled={loading} id="google-signin-btn">
-              <svg width="20" height="20" viewBox="0 0 48 48">
-                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-              </svg>
-              Continue with Google
-            </button>
-
-            <div className="divider">or</div>
-
-            {/* Email Form */}
-            <form onSubmit={handleEmail}>
-              {error && (
-                <div style={{ background: 'var(--status-open-bg)', color: 'var(--status-open)', padding: '10px 14px', borderRadius: 'var(--radius-md)', fontSize: 13, marginBottom: 16 }}>
-                  {error}
-                </div>
-              )}
-
-              <div className="form-group">
-                <input
-                  id="email-input"
-                  className="form-input"
-                  type="email"
-                  placeholder="Email address"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="form-group" style={{ position: 'relative' }}>
-                <input
-                  id="password-input"
-                  className="form-input"
-                  type={showPass ? 'text' : 'password'}
-                  placeholder="Create a password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                  style={{ paddingRight: 44 }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPass(!showPass)}
-                  style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', color: 'var(--text-muted)' }}
-                >
-                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-
-              <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 16, lineHeight: 1.5 }}>
-                By continuing, you agree to our{' '}
-                <a href="#" style={{ color: 'var(--primary)' }}>Privacy Policy</a> and{' '}
-                <a href="#" style={{ color: 'var(--primary)' }}>Terms of Service</a>
-              </p>
-
-              <button
-                id="submit-auth-btn"
-                type="submit"
-                className="btn btn-primary"
-                style={{ width: '100%', justifyContent: 'center', padding: '13px' }}
-                disabled={loading}
-              >
-                {loading ? <span className="spinner" /> : (isLogin ? 'Sign In' : 'Continue')}
-              </button>
-            </form>
-
-            <div style={{ textAlign: 'center', marginTop: 16, fontSize: 13 }}>
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <button
-                onClick={() => setIsLogin(!isLogin)}
-                style={{ color: 'var(--primary)', fontWeight: 600, background: 'none', fontSize: 13 }}
-              >
-                {isLogin ? 'Sign up' : 'Log in'}
+      {/* Footer Section matching Nextdoor */}
+      <div className="landing-footer">
+        <div className="landing-footer-container">
+          <div className="landing-footer-top">
+            <h2 style={{ maxWidth: 350, lineHeight: 1.2 }}>Create a business page to connect with local customers on CivicSense</h2>
+            <div style={{ display: 'flex', gap: 10, flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
+              <input 
+                type="text" 
+                placeholder="Your business name" 
+                style={{ padding: '14px 20px', borderRadius: '8px', border: '1px solid var(--border)', width: '300px', fontSize: '15px' }} 
+              />
+              <button style={{ width: 46, height: 46, borderRadius: '50%', background: '#1A2b3c', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                →
               </button>
             </div>
           </div>
 
-          {/* Trust badges */}
-          <div style={{ display: 'flex', gap: 16, justifyContent: 'center', marginTop: 20 }}>
-            {[
-              { icon: <Shield size={14} />, label: 'Secure & Private' },
-              { icon: <Users size={14} />, label: 'Community Verified' },
-              { icon: <TrendingUp size={14} />, label: 'AI-Powered' },
-            ].map(t => (
-              <div key={t.label} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12, color: 'var(--text-muted)' }}>
-                {t.icon} {t.label}
-              </div>
-            ))}
+          <div className="landing-footer-grid">
+            <div className="footer-col">
+              <h4>CivicSense</h4>
+              <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#">News</a></li>
+                <li><a href="#">Media Assets</a></li>
+                <li><a href="#">Investor Relations</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Help</a></li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <h4>Neighbors</h4>
+              <ul>
+                <li><a href="#">Get Started</a></li>
+                <li><a href="#">Events</a></li>
+                <li><a href="#">Neighborhoods</a></li>
+                <li><a href="#">Guidelines</a></li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <h4>Partners</h4>
+              <ul>
+                <li><a href="#">Small Business</a></li>
+                <li><a href="#">Brands and Agencies</a></li>
+                <li><a href="#">Public Agencies</a></li>
+                <li><a href="#">Publishers</a></li>
+                <li><a href="#">Businesses on CivicSense</a></li>
+              </ul>
+            </div>
+            <div className="footer-col">
+              <h4>Legal</h4>
+              <ul>
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Legal & Terms</a></li>
+                <li><a href="#">Cookies</a></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
